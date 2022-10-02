@@ -36,12 +36,3 @@ for i in range(2, max_page + 1):
 # Save our product data in csv file
 products = products[['canonicalUrl', 'description', 'image', 'name', 'price', 'rating.averageRating', 'rating.numberOfReviews']]
 products.to_csv('walmart-products.csv')
-
-# Testing files
-# print(df.head())
-
-# with open('result.html', 'w') as f: 
-#   f.write(html.text)
-
-# with open('response.json', 'w') as f:
-#   f.write(json.dumps(results))

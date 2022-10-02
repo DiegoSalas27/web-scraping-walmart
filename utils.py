@@ -1,6 +1,7 @@
 import json
 import time
 from typing import List
+import winsound
 import requests
 from urllib.parse import urlencode
 from parsel import Selector
@@ -53,6 +54,8 @@ def parse_product(html_text: str):
             "shortDescription",
             "type",
         ]
+        if _product_raw == None: 
+            return
         product = {k: v for k, v in _product_raw.items() if k in wanted_product_keys}
         reviews_raw = data["props"]["pageProps"]["initialData"]["data"]["reviews"]
         product['reviews'] = reviews_raw
@@ -61,14 +64,34 @@ def parse_product(html_text: str):
 def scrape_products_by_url(urls: List[str], df: DataFrame) -> DataFrame:
     """scrape walmart products by urls"""
     log.info(f"scraping {len(urls)} product urls (in chunks of 50)")
+    i = 0
+    fileNum = 1
     for url in urls:
+        i += 1
         html = requests.get(url, headers=headers_product_detail) #headers are important because they might hid the fact that this is an actual bot
         product = parse_product(html.text)
         time.sleep(10) # fake being a real user
         if product != None:
             df = df.append(pd.json_normalize(product), ignore_index=True)
         
-        http_status = 'Successfully' if html.status_code == 200 else 'Unsuccessfully'
+        if html.status_code == 200:
+            http_status = 'Successfully'
+        else:
+            http_status = 'Unsuccessfully'
+            beep()
+            # if f'cookie{fileNum}' in cookies:
+            #     headers_product_detail['cookie'] = cookies[f'cookie{fileNum}']
+            # else:
+            #     break
+
         log.info(f'Scraped {url} {http_status} waiting...')
-    
+        if i % 25 == 0: # save products 50 by 50
+            df.to_csv(f'walmart-products-{fileNum}.csv')
+            fileNum += 1
+
     return df
+
+def beep():
+    frequency = 2500  # Set Frequency To 2500 Hertz
+    duration = 1000  # Set Duration To 1000 ms == 1 second
+    winsound.Beep(frequency, duration)
