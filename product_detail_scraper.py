@@ -1,6 +1,5 @@
 import pandas as pd
 from urllib.parse import urljoin
-from loguru import logger as log
 from utils import *
 from constants import *
 
@@ -22,4 +21,4 @@ for canonicalUrl in df['canonicalUrl']:
     continue
 
 products = scrape_products_by_url(product_urls, products)
-# products.to_csv('walmart-products.csv')
+products.to_csv('walmart-products.csv')

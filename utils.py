@@ -9,6 +9,7 @@ from loguru import logger as log
 import pandas as pd
 from pandas import DataFrame
 from constants import *
+from cookies import *
 
 def create_search_url(query: str, page=1, sort="price_low") -> str:
     """create url for a single walmart search page"""
@@ -28,7 +29,7 @@ def parse_search(html_text: str):
     data = json.loads(data)
 
     total_results = data["props"]["pageProps"]["initialData"]["searchResult"]["itemStacks"][0]["count"]
-    results = data["props"]["pageProps"]["initialData"]["searchResult"]["itemStacks"][0]['items']
+    results = data["props"]["pageProps"]["initialData"]["searchResult"]["itemStacks"][0]
     return results, total_results
 
 def parse_product(html_text: str):
@@ -79,16 +80,12 @@ def scrape_products_by_url(urls: List[str], df: DataFrame) -> DataFrame:
         else:
             http_status = 'Unsuccessfully'
             beep()
-            # if f'cookie{fileNum}' in cookies:
-            #     headers_product_detail['cookie'] = cookies[f'cookie{fileNum}']
-            # else:
-            #     break
+            if f'cookie{fileNum}' in cookies:
+                headers_product_detail['cookie'] = cookies[f'cookie{fileNum}']
+            else:
+                break
 
-        log.info(f'Scraped {url} {http_status} waiting...')
-        if i % 25 == 0: # save products 50 by 50
-            df.to_csv(f'walmart-products-{fileNum}.csv')
-            fileNum += 1
-
+        log.info(f'Scraped {url} {http_status} waiting...')    
     return df
 
 def beep():
