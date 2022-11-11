@@ -12,7 +12,6 @@ from constants import *
 from cookies import *
 
 def create_search_url(query: str, page=1, sort="price_low") -> str:
-    """create url for a single walmart search page"""
     return "https://www.walmart.com/search?" + urlencode(
         {
             "q": query,
@@ -23,7 +22,6 @@ def create_search_url(query: str, page=1, sort="price_low") -> str:
     )
 
 def parse_search(html_text: str):
-    """extract search results from search HTML response"""
     sel = Selector(text=html_text)
     data = sel.xpath('//script[@id="__NEXT_DATA__"]/text()').get()
     data = json.loads(data)
@@ -33,30 +31,26 @@ def parse_search(html_text: str):
     return results, total_results
 
 def parse_product(html_text: str):
-    """parse walmart product from product page response"""
     sel = Selector(text=html_text)
     data = sel.xpath('//script[@id="__NEXT_DATA__"]/text()').get()
     if data != None: # This verification is because we might get an html with no content
         data = json.loads(data)
         _product_raw = data["props"]["pageProps"]["initialData"]["data"]["product"]
         wanted_product_keys = [
-            "availabilityStatus",
-            "averageRating",
-            "brand",
-            "id",
-            "imageInfo",
-            "manufacturerName",
-            "name",
-            "model",
-            "category.path"
-            "orderLimit",
-            "orderMinLimit",
-            "priceInfo",
-            "shortDescription",
-            "type",
-        ]
+                               "averageRating", # rating
+                               "brand",
+                               "imageInfo", # thumbnail_image
+                               "manufacturerName", # manufacturer
+                               "name",
+                               "model",
+                               "priceInfo", # price
+                               "shortDescription", # description
+                               "reviews" # comments
+                               "type",] # type_of
+        
         if _product_raw == None: 
             return
+        
         product = {k: v for k, v in _product_raw.items() if k in wanted_product_keys}
         reviews_raw = data["props"]["pageProps"]["initialData"]["data"]["reviews"]
         product['reviews'] = reviews_raw
@@ -67,7 +61,7 @@ def scrape_products_by_url(urls: List[str], df: DataFrame) -> DataFrame:
     log.info(f"scraping {len(urls)} product urls (in chunks of 50)")
     i = 0
     fileNum = 1
-    for url in urls:
+    for url in urls:                                             #urls is the file containing multiple url
         i += 1
         html = requests.get(url, headers=headers_product_detail) #headers are important because they might hid the fact that this is an actual bot
         product = parse_product(html.text)
@@ -82,10 +76,13 @@ def scrape_products_by_url(urls: List[str], df: DataFrame) -> DataFrame:
             beep()
             if f'cookie{fileNum}' in cookies:
                 headers_product_detail['cookie'] = cookies[f'cookie{fileNum}']
+                fileNum += 1
             else:
                 break
 
         log.info(f'Scraped {url} {http_status} waiting...')    
+        if i == 100:
+            break
     return df
 
 def beep():

@@ -13,5 +13,5 @@ python product_grid_scraper.py
 ```
 You will then get a preview csv file that will be read by the product_detail_scraper file. To run this file enter this command:
 ```
-python product_grid_scraper.py
+python product_detail_scraper.py
 ```
