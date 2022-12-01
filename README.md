@@ -1,6 +1,15 @@
 # poc-walmart
 This projects implements evading IP tracking by rotating residential proxies via VPN, Updating cookies. This techniques should allow us to scrape through Walmart website without being blocked
 
+## Environment variables:
+It will be necessary to create an .env file in the root of this project with the following entries:
+```
+DB_HOST=<address of the host>(could be localhost if the database is running on the same computer)
+DB_PASSWORD=<password for the database user>
+DB_USER=<name of the user of the database>
+DB_NAME=<name of the database to use>
+```
+
 ## install dependencies:
 ```
 pip install -r requirements.txt
