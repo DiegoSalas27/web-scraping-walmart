@@ -19,39 +19,22 @@ mycursor = mydb.cursor()
 
 # get products from csv file
 
-df = pd.read_csv('walmart-products-preview.csv')
+df = pd.read_csv('target_new_479products.csv', encoding='latin1')
 
-# get each product page based on collected products
-
-# create dataFrame
-products = pd.DataFrame([])
-
-# get urls for each product
-product_urls = []
-for canonicalUrl in df['canonicalUrl']:
-  try:
-    product_urls.append(urljoin("https://www.walmart.com/", canonicalUrl) )
-  except:
-    continue
-
-products = scrape_products_by_url(product_urls, products)
-
-
-
-for index, row in products.iterrows():
+for index, row in df.iterrows():
   try:
     sql = "INSERT INTO products (category_id, name, product_slug, brand, model, description, manufacturer, thumbnail_image, rating, price) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     val = (
       1,
       row['name'], 
-      row['name'],
+      row['product_slug'],
       row['brand'], 
       row['model'], 
-      row['shortDescription'], 
-      row['manufacturerName'], 
-      row['imageInfo.thumbnailUrl'], 
-      row['averageRating'], 
-      row['priceInfo.currentPrice.price'])
+      row['description'], 
+      row['manufacturer'], 
+      row['thumbnail_image'], 
+      row['rating'], 
+      row['price'])
 
     mycursor.execute(sql, val)
 

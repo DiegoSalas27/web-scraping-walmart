@@ -81,8 +81,6 @@ def scrape_products_by_url(urls: List[str], df: DataFrame) -> DataFrame:
                 break
 
         log.info(f'Scraped {url} {http_status} waiting...')    
-        if i == 100:
-            break
     return df
 
 def beep():
