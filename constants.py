@@ -1,3 +1,10 @@
+"""
+ AUTHOR: Diego Salas Noain/Diane Renard
+ FILENAME: constants.py
+ SPECIFICATION: We need to send an HTTP request with a header so we don't get categorized as a webscrapping bot
+ FOR: CS 5364 Information Retrieval Section 001
+"""
+
 headers = {
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
   "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",

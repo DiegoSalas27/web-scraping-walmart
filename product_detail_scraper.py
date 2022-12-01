@@ -1,3 +1,11 @@
+"""
+ AUTHOR: Diego Salas Noain/ Diane Renard
+ FILENAME: product_detail_scrapper.py
+ SPECIFICATION: How do we scrape the specific details of a product from the list of product returned? 
+                We  go to the specific page of the product and scrape the details 
+ FOR: CS 5364 Information Retrieval Section 001
+"""
+
 import os
 import mysql.connector
 import pandas as pd
@@ -37,7 +45,7 @@ for canonicalUrl in df['canonicalUrl']:
 products = scrape_products_by_url(product_urls, products)
 
 
-
+# save each dataframe row in the database
 for index, row in products.iterrows():
   try:
     sql = "INSERT INTO products (category_id, name, product_slug, brand, model, description, manufacturer, thumbnail_image, rating, price) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -60,5 +68,3 @@ for index, row in products.iterrows():
     print(mycursor.rowcount, "record inserted.")
   except:
     continue
-
-# products.to_csv('walmart-products-detail.csv')

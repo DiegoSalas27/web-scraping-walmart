@@ -1,3 +1,11 @@
+"""
+ AUTHOR: Diego Salas Noain/Diane Renard
+ FILENAME: product_grid_scraper.py
+ SPECIFICATION: How do we scrape a list of products that goes on different pages? 
+                Scrape through each of the pages by usings request package and parse the data using parsel.
+ FOR: CS 5364 Information Retrieval Section 001
+"""
+
 import requests
 import pandas as pd
 import time
@@ -7,10 +15,10 @@ from utils import *
 from constants import *
 
 # dynamic url creation
-url = create_search_url(query='televisions')
+url = create_search_url(query='televisions') # dynamic url creation
 
 # create dataFrame
-products = pd.DataFrame([])
+products = pd.DataFrame([]) # create dataFrame
 
 # Perform initial request (it's necessary to get correct pagination)
 html = requests.get(url, headers=headers) # response is html
